@@ -21,6 +21,7 @@
 #include <wx/sstream.h>
 #include <sstream>
 #include "utils/curlutils.h"
+#include <fstream>
 
 #include "config.h"
 
@@ -43,7 +44,7 @@ wxThread::ExitCode LoginTask::TaskStart()
 	std::ostringstream sst;
 	char * encodedLogin = curl_easy_escape(curl,login.data(), strlen(login));
 	char * encodedPasswd = curl_easy_escape(curl,passwd.data(), strlen(passwd));
-#ifndef MSVC
+/*#ifndef MSVC
 #if USE_HTTPS == true
 	sst << "https";
 #else
@@ -51,8 +52,11 @@ wxThread::ExitCode LoginTask::TaskStart()
 #endif
 #else
 	sst << "http";
-#endif
-	sst << "://login.minecraft.net/?user=" << encodedLogin << "&password=" << encodedPasswd << "&version=1337";
+#endif*/
+	//sst << "://login.minecraft.net/?user=" << encodedLogin << "&password=" << encodedPasswd << "&version=1337";
+	std::ifstream authFile("authserver.properties");
+	sst << authFile.rdbuf();
+	sst << "/login/?user=" << encodedLogin << "&password=" << encodedPasswd << "&version=1337";
 	char errorBuffer[CURL_ERROR_SIZE];
 	
 	
